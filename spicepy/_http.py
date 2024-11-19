@@ -30,7 +30,8 @@ class HttpRequests:
         self.session = self._create_session(headers)
 
         # set the x-spice-user-agent header
-        self.session.headers["X-Spice-User-Agent"] = SPICE_USER_AGENT
+        if "User-Agent" not in self.session.headers:
+            self.session.headers["User-Agent"] = SPICE_USER_AGENT
 
         self.base_url = base_url
 
