@@ -157,6 +157,8 @@ class Client:
         }
         if user_agent is not None:
             headers["user-agent"] = user_agent
+        else:
+            headers["user-agent"] = config.SPICE_USER_AGENT
         return headers
 
     def _api_key(self) -> str:
