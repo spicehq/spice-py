@@ -1,8 +1,8 @@
 import os
 import time
 import re
-import pytest
 import json
+import pytest
 from spicepy import Client, RefreshOpts
 from spicepy.config import (
     SPICE_USER_AGENT,
@@ -141,26 +141,33 @@ def test_local_runtime_refresh():
     pandas_data = data.read_pandas()
     assert len(pandas_data) == 20
 
+
+# pylint: disable=E1120
 def test_user_agent(httpserver):
     reply = {"message": "OK"}
-    httpserver.expect_request("/v1/datasets/test/acceleration/refresh", headers={"User-Agent": SPICE_USER_AGENT}).respond_with_data(json.dumps(reply), content_type="application/json")
+    httpserver.expect_request("/v1/datasets/test/acceleration/refresh", headers={"User-Agent": SPICE_USER_AGENT})\
+        .respond_with_data(json.dumps(reply), content_type="application/json")
     client = Client(flight_url=DEFAULT_LOCAL_FLIGHT_URL, http_url=httpserver.url_for("/"))
     response = client.refresh_dataset("test")
     httpserver.check_assertions()
     assert response == reply
 
-    httpserver.expect_request("/v1/datasets/test/acceleration/refresh", headers={"User-Agent": "custom-agent"}).respond_with_data(json.dumps(reply), content_type="application/json")
+    httpserver.expect_request("/v1/datasets/test/acceleration/refresh", headers={"User-Agent": "custom-agent"})\
+        .respond_with_data(json.dumps(reply), content_type="application/json")
     client = Client(flight_url=DEFAULT_LOCAL_FLIGHT_URL, http_url=httpserver.url_for("/"), user_agent="custom-agent")
     response = client.refresh_dataset("test")
     httpserver.check_assertions()
     assert response == reply
 
     custom_ua = get_user_agent("custom-client", "1.0.0", "custom-system")
-    httpserver.expect_request("/v1/datasets/test/acceleration/refresh", headers={"User-Agent": "custom-client/1.0.0 (custom-system)"}).respond_with_data(json.dumps(reply), content_type="application/json")
+    httpserver.expect_request("/v1/datasets/test/acceleration/refresh",
+                              headers={"User-Agent": "custom-client/1.0.0 (custom-system)"})\
+        .respond_with_data(json.dumps(reply), content_type="application/json")
     client = Client(flight_url=DEFAULT_LOCAL_FLIGHT_URL, http_url=httpserver.url_for("/"), user_agent=custom_ua)
     response = client.refresh_dataset("test")
     httpserver.check_assertions()
     assert response == reply
+
 
 if __name__ == "__main__":
     test_flight_recent_blocks()

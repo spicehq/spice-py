@@ -135,6 +135,7 @@ class _SpiceFlight:
 
 
 class Client:
+    # pylint: disable=R0917
     def __init__(
         self,
         api_key: str = None,
