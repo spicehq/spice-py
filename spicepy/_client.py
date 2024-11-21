@@ -65,7 +65,7 @@ class _SpiceFlight:
         # headers kwargs claim to support Tuple[str, str], but it's actually Tuple[bytes, bytes] :|
         # Open issue in Arrow: https://github.com/apache/arrow/issues/35288
         user_agent = custom_user_agent or config.SPICE_USER_AGENT
-        return (str.encode("User-Agent"), str.encode(user_agent))
+        return (str.encode("user-agent"), str.encode(user_agent))
 
     def __init__(self, grpc: str, api_key: str, tls_root_certs, user_agent=None):
         self._flight_client = flight.connect(grpc, tls_root_certs=tls_root_certs)
@@ -156,7 +156,7 @@ class Client:
             "Accept": "application/json",
         }
         if user_agent is not None:
-            headers["User-Agent"] = user_agent
+            headers["user-agent"] = user_agent
         return headers
 
     def _api_key(self) -> str:
