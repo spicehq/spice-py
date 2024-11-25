@@ -55,6 +55,7 @@ Querying data is done through a `Client` object that initialize the connection w
 - **api_key** (string, required): API key to authenticate with the endpoint.
 - **url** (string, optional): URL of the endpoint to use (default: grpc+tls://flight.spiceai.io; firecache: grpc+tls://firecache.spiceai.io)
 - **tls_root_cert** (Path or string, optional): Path to the tls certificate to use for the secure connection (omit for automatic detection)
+- **user_agent** (string, optional): A custom `User-Agent` string to pass when connecting to Spice. Use `spicepy.config.get_user_agent` to build the custom `User-Agent`
 
 Once a `Client` is obtained queries can be made using the `query()` function. The `query()` function has the following arguments:
 

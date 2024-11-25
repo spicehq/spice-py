@@ -61,15 +61,16 @@ class _Cert:
 
 class _SpiceFlight:
     @staticmethod
-    def _user_agent():
+    def _user_agent(custom_user_agent=None):
         # headers kwargs claim to support Tuple[str, str], but it's actually Tuple[bytes, bytes] :|
         # Open issue in Arrow: https://github.com/apache/arrow/issues/35288
-        return (str.encode("x-spice-user-agent"), str.encode(config.SPICE_USER_AGENT))
+        user_agent = custom_user_agent or config.SPICE_USER_AGENT
+        return (str.encode("user-agent"), str.encode(user_agent))
 
-    def __init__(self, grpc: str, api_key: str, tls_root_certs):
+    def __init__(self, grpc: str, api_key: str, tls_root_certs, user_agent=None):
         self._flight_client = flight.connect(grpc, tls_root_certs=tls_root_certs)
         self._api_key = api_key
-        self.headers = [_SpiceFlight._user_agent()]
+        self.headers = [_SpiceFlight._user_agent(user_agent)]
         self._flight_options = flight.FlightCallOptions(
             headers=self.headers, timeout=DEFAULT_QUERY_TIMEOUT_SECS
         )
@@ -134,25 +135,31 @@ class _SpiceFlight:
 
 
 class Client:
+    # pylint: disable=R0917
     def __init__(
         self,
         api_key: str = None,
         flight_url: str = config.DEFAULT_LOCAL_FLIGHT_URL,
         http_url: str = config.DEFAULT_HTTP_URL,
         tls_root_cert: Union[str, Path, None] = None,
+        user_agent: Optional[str] = None,
     ):  # pylint: disable=R0913
         tls_root_certs = _Cert(tls_root_cert).tls_root_certs
-        self._flight = _SpiceFlight(flight_url, api_key, tls_root_certs)
+        self._flight = _SpiceFlight(flight_url, api_key, tls_root_certs, user_agent)
 
         self.api_key = api_key
-        self.http = HttpRequests(http_url, self._headers())
+        self.http = HttpRequests(http_url, self._headers(user_agent))
 
-    def _headers(self) -> Dict[str, str]:
-        return {
+    def _headers(self, user_agent=None) -> Dict[str, str]:
+        headers = {
             "X-API-Key": self._api_key(),
             "Accept": "application/json",
-            "User-Agent": "spicepy 2.0",
         }
+        if user_agent is not None:
+            headers["user-agent"] = user_agent
+        else:
+            headers["user-agent"] = config.SPICE_USER_AGENT
+        return headers
 
     def _api_key(self) -> str:
         key = self.api_key

@@ -29,8 +29,9 @@ class HttpRequests:
     def __init__(self, base_url: str, headers: Dict[str, str]) -> None:
         self.session = self._create_session(headers)
 
-        # set the x-spice-user-agent header
-        self.session.headers["X-Spice-User-Agent"] = SPICE_USER_AGENT
+        # set the user-agent header
+        if "user-agent" not in self.session.headers:
+            self.session.headers["user-agent"] = SPICE_USER_AGENT
 
         self.base_url = base_url
 
