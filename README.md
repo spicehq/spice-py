@@ -33,20 +33,7 @@ client = Client(
       api_key='API_KEY',
       flight_url="grpc+tls://flight.spiceai.io"
 )
-data = client.query('SELECT * FROM eth.recent_blocks LIMIT 10;', timeout=5*60)
-pd = data.read_pandas()
-```
-
-**Firecache Query (Available if firecache is enabled)**
-
-```python
-from spicepy import Client
-
-client = Client(
-      api_key='API_KEY',
-      flight_url="grpc+tls://flight.spiceai.io"
-)
-data = client.fire_query('SELECT * FROM eth.recent_blocks LIMIT 10;', timeout=5*60)
+data = client.query('SELECT * FROM taxi_trips LIMIT 10;', timeout=5*60)
 pd = data.read_pandas()
 ```
 
