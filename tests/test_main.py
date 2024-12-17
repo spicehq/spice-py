@@ -14,7 +14,7 @@ from spicepy.config import (
 
 # Skip cloud tests if TEST_SPICE_CLOUD is not set to true
 def skip_cloud():
-    #skip = os.environ.get("TEST_SPICE_CLOUD") != "true"
+    # skip = os.environ.get("TEST_SPICE_CLOUD") != "true"
     # Skipping all cloud tests for now
     skip = True
     return pytest.mark.skipif(skip, reason="Cloud tests disabled")
