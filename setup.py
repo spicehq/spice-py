@@ -27,7 +27,7 @@ def parse_markdown(path: str) -> str:
 def setup_package():
     setup(
         name="spicepy",
-        version="3.0.0",
+        version="4.0.0",
         maintainer="Spice AI, Inc.",
         maintainer_email="webmaster@spice.ai",
         author="Spice AI, Inc.",
